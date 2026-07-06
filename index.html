@@ -173,9 +173,6 @@
     #stage.panel-adjusted #btn-f8 {
       display: block;
     }
-    #stage.panel-adjusted #btn-f5 {
-      display: none;
-    }
 
     #btn-f3 {
       left: 418px;
@@ -185,12 +182,13 @@
       --bg-x: -418px;
       --bg-y: -603px;
     }
-    #btn-f5 {
-      left: 828px;
-      top: 603px;
-      background-position: -828px -603px;
-      --bg-x: -828px;
-      --bg-y: -603px;
+    #btn-f7 {
+      left: 214px;
+      top: 680px;
+      height: 74px;
+      background-position: -214px -680px;
+      --bg-x: -214px;
+      --bg-y: -680px;
     }
     #btn-f8 {
       left: 418px;
@@ -253,9 +251,9 @@
       
       <div id="panel-overlay"></div>
       
-      <button id="btn-f3" class="ui-btn" title="Narrow Hair (F3)"></button>
-      <button id="btn-f5" class="ui-btn" title="Hairline ADJ (F5)"></button>
-      <button id="btn-f8" class="ui-btn" title="Widen Hair (F8)"></button>
+      <button id="btn-f3" class="ui-btn" title="Widen Hair (F3)"></button>
+      <button id="btn-f7" class="ui-btn" title="Toggle Panel (F7)"></button>
+      <button id="btn-f8" class="ui-btn" title="Narrow Hair (F8)"></button>
       <!-- <div id="hint">Use arrow keys to pan AOI</div> -->
     </div>
   </div>
@@ -305,7 +303,7 @@
       let hairOffset = 46;
       const rootStyle = document.documentElement.style;
       const btnF3 = document.getElementById('btn-f3');
-      const btnF5 = document.getElementById('btn-f5');
+      const btnF7 = document.getElementById('btn-f7');
       const btnF8 = document.getElementById('btn-f8');
 
       function updateHairOffset() {
@@ -337,26 +335,21 @@
         setTimeout(() => btn.classList.remove('active'), 150);
       }
 
-      btnF3.addEventListener('click', narrowHair);
-      btnF5.addEventListener('click', toggleAdjustPanel);
-      btnF8.addEventListener('click', widenHair);
+      // F3 now widens, F8 now narrows
+      btnF3.addEventListener('click', widenHair);
+      btnF7.addEventListener('click', toggleAdjustPanel);
+      btnF8.addEventListener('click', narrowHair);
 
       window.addEventListener('keydown', function (e) {
         if (e.key === 'F3') {
           e.preventDefault();
-          narrowHair();
+          widenHair();
           simulateButtonPress(btnF3);
-          return;
-        }
-        if (e.key === 'F5') {
-          e.preventDefault();
-          toggleAdjustPanel();
-          simulateButtonPress(btnF5);
           return;
         }
         if (e.key === 'F8') {
           e.preventDefault();
-          widenHair();
+          narrowHair();
           simulateButtonPress(btnF8);
           return;
         }
