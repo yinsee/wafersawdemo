@@ -245,6 +245,15 @@
       --bg-x: -256px;
       --bg-y: -661px;
     }
+    #btn-start {
+      left: 875px;
+      top: 115px;
+      width: 135px;
+      height: 70px;
+      background-position: -875px -115px;
+      --bg-x: -875px;
+      --bg-y: -115px;
+    }
 
     .sidebar-input {
       position: absolute;
@@ -334,6 +343,8 @@
       <button id="btn-down" class="ui-btn" title="Pan Down"></button>
       <button id="btn-left" class="ui-btn" title="Pan Left"></button>
       <button id="btn-right" class="ui-btn" title="Pan Right"></button>
+      
+      <button id="btn-start" class="ui-btn" title="Start"></button>
 
       <input type="text" class="sidebar-input" id="input-z1" value="0.000">
       <input type="text" class="sidebar-input" id="input-z2" value="0.000">
@@ -446,6 +457,14 @@
       btnRight.addEventListener('click', () => {
         if (!stage.classList.contains('panel-adjusted')) return;
         x -= STEP;
+        apply();
+      });
+
+      const btnStart = document.getElementById('btn-start');
+      btnStart.addEventListener('click', () => {
+        // Reset to random position inside bounds [minX, 0] and [minY, 0]
+        x = minX + Math.random() * (0 - minX);
+        y = minY + Math.random() * (0 - minY);
         apply();
       });
 
