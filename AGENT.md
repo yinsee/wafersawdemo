@@ -28,6 +28,6 @@ This project is an interactive HTML prototype simulating the UI of a machine vis
 
 - **Hairline Adjustment Mode**:
   - **F7 (Wafer Icon)**: Click the F7 button (wafer icon with arrows) to toggle the "Hairline ADJ" menu panel at the bottom of the screen. There is no keyboard hotkey for toggling this panel.
-  - **F3 (Widen Hair)**: While in ADJ mode, click the "F3" button or press the `F3` key to move the top and bottom dashed green lines away from the center by 2px (up to a maximum offset of 240px).
-  - **F8 (Narrow Hair)**: While in ADJ mode, click the "F8" button or press the `F8` key to move the dashed lines closer to the center by 2px (down to a minimum offset of 0px).
+  - **F3 (Narrow Hair)**: While in ADJ mode, click the "F3" button or press the `F3` key to move the top and bottom dashed green lines closer to the center by 2px (down to a minimum offset of 0px).
+  - **F8 (Widen Hair)**: While in ADJ mode, click the "F8" button or press the `F8` key to move the dashed lines away from the center by 2px (up to a maximum offset of 240px).
   - **Animation**: The interactive buttons overlay the original UI and feature a realistic "sink in" press animation using CSS pseudo-classes and background offsets. The background image of the buttons seamlessly switches to match the `adjust.jpeg` panel when toggled.

@@ -251,9 +251,9 @@
       
       <div id="panel-overlay"></div>
       
-      <button id="btn-f3" class="ui-btn" title="Widen Hair (F3)"></button>
+      <button id="btn-f3" class="ui-btn" title="Narrow Hair (F3)"></button>
       <button id="btn-f7" class="ui-btn" title="Toggle Panel (F7)"></button>
-      <button id="btn-f8" class="ui-btn" title="Narrow Hair (F8)"></button>
+      <button id="btn-f8" class="ui-btn" title="Widen Hair (F8)"></button>
       <!-- <div id="hint">Use arrow keys to pan AOI</div> -->
     </div>
   </div>
@@ -335,21 +335,20 @@
         setTimeout(() => btn.classList.remove('active'), 150);
       }
 
-      // F3 now widens, F8 now narrows
-      btnF3.addEventListener('click', widenHair);
+      btnF3.addEventListener('click', narrowHair);
       btnF7.addEventListener('click', toggleAdjustPanel);
-      btnF8.addEventListener('click', narrowHair);
+      btnF8.addEventListener('click', widenHair);
 
       window.addEventListener('keydown', function (e) {
         if (e.key === 'F3') {
           e.preventDefault();
-          widenHair();
+          narrowHair();
           simulateButtonPress(btnF3);
           return;
         }
         if (e.key === 'F8') {
           e.preventDefault();
-          narrowHair();
+          widenHair();
           simulateButtonPress(btnF8);
           return;
         }
