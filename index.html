@@ -171,6 +171,12 @@
     #stage.panel-adjusted #btn-f8 {
       display: none;
     }
+    #stage.panel-adjusted #btn-up,
+    #stage.panel-adjusted #btn-down,
+    #stage.panel-adjusted #btn-left,
+    #stage.panel-adjusted #btn-right {
+      display: block;
+    }
 
     #btn-f3 {
       left: 370px;
@@ -198,6 +204,75 @@
       background-position: -370px -684px;
       --bg-x: -370px;
       --bg-y: -684px;
+    }
+
+    #btn-up, #btn-down, #btn-left, #btn-right {
+      display: none;
+    }
+    #btn-up {
+      left: 209px;
+      top: 611px;
+      width: 72px;
+      height: 42px;
+      background-position: -209px -611px;
+      --bg-x: -209px;
+      --bg-y: -611px;
+    }
+    #btn-down {
+      left: 209px;
+      top: 711px;
+      width: 72px;
+      height: 42px;
+      background-position: -209px -711px;
+      --bg-x: -209px;
+      --bg-y: -711px;
+    }
+    #btn-left {
+      left: 163px;
+      top: 661px;
+      width: 71px;
+      height: 42px;
+      background-position: -163px -661px;
+      --bg-x: -163px;
+      --bg-y: -661px;
+    }
+    #btn-right {
+      left: 256px;
+      top: 661px;
+      width: 72px;
+      height: 42px;
+      background-position: -256px -661px;
+      --bg-x: -256px;
+      --bg-y: -661px;
+    }
+
+    .sidebar-input {
+      position: absolute;
+      width: 90px;
+      height: 25px;
+      box-sizing: border-box;
+      border: 1px solid #7f7f7f;
+      background-color: #ffffff;
+      color: #000000;
+      font-family: monospace;
+      font-size: 14px;
+      text-align: right;
+      padding-right: 5px;
+      outline: none;
+      z-index: 20;
+    }
+
+    #input-z1 {
+      left: 565px;
+      top: 470px;
+    }
+    #input-z2 {
+      left: 565px;
+      top: 500px;
+    }
+    #input-speed {
+      left: 565px;
+      top: 560px;
     }
 
     #panel-overlay {
@@ -252,8 +327,17 @@
       <div id="panel-overlay"></div>
       
       <button id="btn-f3" class="ui-btn" title="Narrow Hair (F3)"></button>
-      <button id="btn-f7" class="ui-btn" title="Toggle Panel"></button>
+      <button id="btn-f7" class="ui-btn" title="Toggle Panel (F7)"></button>
       <button id="btn-f8" class="ui-btn" title="Widen Hair (F8)"></button>
+      
+      <button id="btn-up" class="ui-btn" title="Pan Up"></button>
+      <button id="btn-down" class="ui-btn" title="Pan Down"></button>
+      <button id="btn-left" class="ui-btn" title="Pan Left"></button>
+      <button id="btn-right" class="ui-btn" title="Pan Right"></button>
+
+      <input type="text" class="sidebar-input" id="input-z1" value="0.000">
+      <input type="text" class="sidebar-input" id="input-z2" value="0.000">
+      <input type="text" class="sidebar-input" id="input-speed" value="0.000">
       <!-- <div id="hint">Use arrow keys to pan AOI</div> -->
     </div>
   </div>
@@ -338,6 +422,32 @@
       btnF3.addEventListener('click', narrowHair);
       btnF7.addEventListener('click', toggleAdjustPanel);
       btnF8.addEventListener('click', widenHair);
+
+      const btnUp = document.getElementById('btn-up');
+      const btnDown = document.getElementById('btn-down');
+      const btnLeft = document.getElementById('btn-left');
+      const btnRight = document.getElementById('btn-right');
+
+      btnUp.addEventListener('click', () => {
+        if (!stage.classList.contains('panel-adjusted')) return;
+        y += STEP;
+        apply();
+      });
+      btnDown.addEventListener('click', () => {
+        if (!stage.classList.contains('panel-adjusted')) return;
+        y -= STEP;
+        apply();
+      });
+      btnLeft.addEventListener('click', () => {
+        if (!stage.classList.contains('panel-adjusted')) return;
+        x += STEP;
+        apply();
+      });
+      btnRight.addEventListener('click', () => {
+        if (!stage.classList.contains('panel-adjusted')) return;
+        x -= STEP;
+        apply();
+      });
 
       window.addEventListener('keydown', function (e) {
         if (e.key === 'F3') {
