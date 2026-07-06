@@ -169,7 +169,7 @@
 
     #stage.panel-adjusted #btn-f3,
     #stage.panel-adjusted #btn-f8 {
-      display: block;
+      display: none;
     }
 
     #btn-f3 {
@@ -177,7 +177,6 @@
       top: 610px;
       width: 135px;
       height: 70px;
-      display: none;
       background-position: -370px -610px;
       --bg-x: -370px;
       --bg-y: -610px;
@@ -196,7 +195,6 @@
       top: 684px;
       width: 135px;
       height: 70px;
-      display: none;
       background-position: -370px -684px;
       --bg-x: -370px;
       --bg-y: -684px;
@@ -313,7 +311,7 @@
       }
 
       function narrowHair() {
-        if (!stage.classList.contains('panel-adjusted')) return; // only in ADJ mode
+        if (stage.classList.contains('panel-adjusted')) return; // only in default mode
         if (hairOffset > 0) {
           hairOffset = Math.max(0, hairOffset - 2);
           updateHairOffset();
@@ -321,7 +319,7 @@
       }
 
       function widenHair() {
-        if (!stage.classList.contains('panel-adjusted')) return; // only in ADJ mode
+        if (stage.classList.contains('panel-adjusted')) return; // only in default mode
         if (hairOffset < 240) {
           hairOffset += 2;
           updateHairOffset();
