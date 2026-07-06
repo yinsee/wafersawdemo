@@ -31,6 +31,9 @@ This project is an interactive HTML prototype simulating the UI of a machine vis
   - **F3 (Narrow Hair)**: Shown by default (hidden when panel is changed). While in the default panel, click the "F3" button or press the `F3` key to move the top and bottom dashed green lines closer to the center by 2px (down to a minimum offset of 0px).
   - **F8 (Widen Hair)**: Shown by default (hidden when panel is changed). While in the default panel, click the "F8" button or press the `F8` key to move the dashed lines away from the center by 2px (up to a maximum offset of 240px).
   - **Directional Buttons (D-Pad)**: While in the adjusted panel, clicking the overlay buttons representing the Up, Down, Left, and Right d-pad keys pans the AOI image dynamically, exactly like their keyboard arrow key counterparts.
-  - **Editable Input Fields**: Added three HTML `<input>` overlays mapped directly to the sidebar values `Z1`, `Z2`, and `Change speed`. They display default `0.000` text, are fully editable, and align visually over the background layout.
+  - **Editable Input Fields**: Added three HTML `<input>` overlays mapped directly to the sidebar values `Z1` height adjust, `Z2` height adjust, and `Change speed`. They display default `0.000` text, are fully editable, and align visually over the background layout:
+    - **Z1 height adjust**: `left: 565px; top: 320px; width: 90px; height: 25px;`
+    - **Z2 height adjust**: `left: 565px; top: 350px; width: 90px; height: 25px;`
+    - **Change speed**: `left: 565px; top: 560px; width: 90px; height: 25px;`
   - **START Button**: Click the overlay button at coordinate `875,115` (size `135,70`) to reset the AOI camera feed translation (`x` and `y`) to a random starting position within the bounds of the image.
   - **Animation**: The interactive buttons overlay the original UI and feature a realistic "sink in" press animation using CSS pseudo-classes and background offsets. The background image of the buttons seamlessly switches to match the `adjust.jpeg` panel when toggled.
