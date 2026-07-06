@@ -25,3 +25,9 @@ This project is an interactive HTML prototype simulating the UI of a machine vis
 - **Panning**: Users can use the keyboard arrow keys (`Up`, `Down`, `Left`, `Right`) to pan the enlarged `aoi.png` image underneath the static `ui.png` overlay.
 - **Boundaries**: The panning logic detects the edges of the scaled `aoi.png` image and clamps movement so the user cannot pan past the image boundaries.
 - **Speed**: Movement is fixed at **2px** per key press.
+
+- **Hairline Adjustment Mode**:
+  - **F5 (Hairline ADJ)**: Click the "F5" button or press the `F5` key to toggle the "Hairline ADJ" menu panel at the bottom of the screen.
+  - **F3 (Narrow Hair)**: While in ADJ mode, click the "F3" button or press the `F3` key to move the top and bottom dashed green lines closer to the center by 2px (down to a minimum offset of 0px).
+  - **F8 (Widen Hair)**: While in ADJ mode, click the "F8" button or press the `F8` key to move the dashed lines away from the center by 2px.
+  - **Animation**: The interactive buttons overlay the original UI and feature a realistic "sink in" press animation using CSS pseudo-classes and background offsets. The background image of the buttons seamlessly switches to match the `adjust.jpeg` panel when toggled.

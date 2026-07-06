@@ -165,19 +165,57 @@
       background-position-x: calc(var(--bg-x) + 1px) !important;
     }
 
+    #stage.panel-adjusted .ui-btn {
+      background-image: url('adjust.jpeg');
+    }
+
+    #stage.panel-adjusted #btn-f3,
+    #stage.panel-adjusted #btn-f8 {
+      display: block;
+    }
+    #stage.panel-adjusted #btn-f5 {
+      display: none;
+    }
+
     #btn-f3 {
       left: 418px;
       top: 603px;
+      display: none;
       background-position: -418px -603px;
       --bg-x: -418px;
+      --bg-y: -603px;
+    }
+    #btn-f5 {
+      left: 828px;
+      top: 603px;
+      background-position: -828px -603px;
+      --bg-x: -828px;
       --bg-y: -603px;
     }
     #btn-f8 {
       left: 418px;
       top: 680px;
+      height: 74px;
+      display: none;
       background-position: -418px -680px;
       --bg-x: -418px;
       --bg-y: -680px;
+    }
+
+    #panel-overlay {
+      position: absolute;
+      left: 0;
+      top: 590px;
+      width: 1024px;
+      height: 178px;
+      background-image: url('adjust.jpeg');
+      background-position: 0 -590px;
+      z-index: 15;
+      display: none;
+      pointer-events: none;
+    }
+    #stage.panel-adjusted #panel-overlay {
+      display: block;
     }
 
     /* #hint {
@@ -213,7 +251,10 @@
         <img id="ui-layer" src="ui.png" alt="ui overlay">
       </div>
       
+      <div id="panel-overlay"></div>
+      
       <button id="btn-f3" class="ui-btn" title="Narrow Hair (F3)"></button>
+      <button id="btn-f5" class="ui-btn" title="Hairline ADJ (F5)"></button>
       <button id="btn-f8" class="ui-btn" title="Widen Hair (F8)"></button>
       <!-- <div id="hint">Use arrow keys to pan AOI</div> -->
     </div>
@@ -264,6 +305,7 @@
       let hairOffset = 46;
       const rootStyle = document.documentElement.style;
       const btnF3 = document.getElementById('btn-f3');
+      const btnF5 = document.getElementById('btn-f5');
       const btnF8 = document.getElementById('btn-f8');
 
       function updateHairOffset() {
@@ -271,6 +313,7 @@
       }
 
       function narrowHair() {
+        if (!stage.classList.contains('panel-adjusted')) return; // only in ADJ mode
         if (hairOffset > 0) {
           hairOffset = Math.max(0, hairOffset - 2);
           updateHairOffset();
@@ -278,10 +321,15 @@
       }
 
       function widenHair() {
+        if (!stage.classList.contains('panel-adjusted')) return; // only in ADJ mode
         if (hairOffset < 240) {
           hairOffset += 2;
           updateHairOffset();
         }
+      }
+      
+      function toggleAdjustPanel() {
+        stage.classList.toggle('panel-adjusted');
       }
 
       function simulateButtonPress(btn) {
@@ -290,6 +338,7 @@
       }
 
       btnF3.addEventListener('click', narrowHair);
+      btnF5.addEventListener('click', toggleAdjustPanel);
       btnF8.addEventListener('click', widenHair);
 
       window.addEventListener('keydown', function (e) {
@@ -297,6 +346,12 @@
           e.preventDefault();
           narrowHair();
           simulateButtonPress(btnF3);
+          return;
+        }
+        if (e.key === 'F5') {
+          e.preventDefault();
+          toggleAdjustPanel();
+          simulateButtonPress(btnF5);
           return;
         }
         if (e.key === 'F8') {
