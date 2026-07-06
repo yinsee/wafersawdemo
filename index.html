@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAW Demo - AOI Pan</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #000;
+      overflow: hidden;
+    }
+
+    /* Fill viewport and center the stage */
+    #viewport {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Stage keeps main-ui.png natural size 1024x768; scaled up via transform */
+    #stage {
+      position: relative;
+      width: 1024px;
+      height: 768px;
+      user-select: none;
+      transform-origin: center center;
+    }
+
+    #stage>img.bg {
+      display: block;
+      width: 1024px;
+      height: 768px;
+      pointer-events: none;
+    }
+
+    /* Placeholder overlaid on the blue area */
+    #placeholder {
+      position: absolute;
+      left: 14px;
+      top: 106px;
+      width: 513px;
+      height: 480px;
+      overflow: hidden;
+      background: #0000ff;
+      outline: 1px solid #000;
+    }
+
+    /* AOI image enlarged 1.25x, panned via transform */
+    #aoi {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 641.25px;
+      /* 513 * 1.25 */
+      height: auto;
+      transform: translate(0px, 0px);
+      will-change: transform;
+      pointer-events: none;
+    }
+
+    .center-lines {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+    }
+    .line-solid {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 100%;
+      height: 1px;
+      background-color: #00ff00;
+      transform: translateY(-50%);
+    }
+    .line-dashed-top {
+      position: absolute;
+      left: 0;
+      top: calc(50% - 46px);
+      width: 100%;
+      height: 1px;
+      background-image: repeating-linear-gradient(90deg, #00ff00, #00ff00 24px, transparent 24px, transparent 40px);
+    }
+    .line-dashed-bottom {
+      position: absolute;
+      left: 0;
+      top: calc(50% + 45px);
+      width: 100%;
+      height: 1px;
+      background-image: repeating-linear-gradient(90deg, #00ff00, #00ff00 24px, transparent 24px, transparent 40px);
+    }
+    .crosshair-tick-top {
+      position: absolute;
+      left: 50%;
+      top: calc(50% - 46px - 7px);
+      width: 1px;
+      height: 15px;
+      background-color: #00ff00;
+      transform: translateX(-50%);
+    }
+    .crosshair-tick-center {
+      position: absolute;
+      left: 50%;
+      top: calc(50% - 12px);
+      width: 1px;
+      height: 25px;
+      background-color: #00ff00;
+      transform: translateX(-50%);
+    }
+    .crosshair-tick-bottom {
+      position: absolute;
+      left: 50%;
+      top: calc(50% + 45px - 7px);
+      width: 1px;
+      height: 15px;
+      background-color: #00ff00;
+      transform: translateX(-50%);
+    }
+
+    #ui-layer {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* #hint {
+    position: absolute;
+    left: 14px;
+    top: 596px;
+    font: 11px monospace;
+    color: #fff;
+    background: rgba(0,0,0,.6);
+    padding: 2px 4px;
+  } */
+  </style>
+</head>
+
+<body>
+  <div id="viewport">
+    <div id="stage" tabindex="0">
+      <img class="bg" src="main-ui.png" alt="main ui">
+      <div id="placeholder">
+        <img id="aoi" src="aoi.png" alt="aoi">
+        
+        <div class="center-lines">
+          <div class="line-dashed-top"></div>
+          <div class="crosshair-tick-top"></div>
+          
+          <div class="line-solid"></div>
+          <div class="crosshair-tick-center"></div>
+          
+          <div class="line-dashed-bottom"></div>
+          <div class="crosshair-tick-bottom"></div>
+        </div>
+
+        <img id="ui-layer" src="ui.png" alt="ui overlay">
+      </div>
+      <!-- <div id="hint">Use arrow keys to pan AOI</div> -->
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const placeholder = document.getElementById('placeholder');
+      const aoi = document.getElementById('aoi');
+      const stage = document.getElementById('stage');
+
+      const STEP = 2;       // pixels moved per key press
+      const SCALE = 1.25;   // AOI enlargement
+
+      let x = 0, y = 0;     // current translation (<= 0)
+      let minX = 0, minY = 0; // most-negative translation allowed
+
+      function computeBounds() {
+        const vw = placeholder.clientWidth;
+        const vh = placeholder.clientHeight;
+        const iw = aoi.naturalWidth * SCALE;
+        const ih = aoi.naturalHeight * SCALE;
+        // If the image is larger than the viewport we can pan; otherwise no room.
+        minX = Math.min(0, vw - iw);
+        minY = Math.min(0, vh - ih);
+      }
+
+      function clamp() {
+        if (x > 0) x = 0;
+        if (y > 0) y = 0;
+        if (x < minX) x = minX;
+        if (y < minY) y = minY;
+      }
+
+      function apply() {
+        clamp();
+        aoi.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+      }
+
+      const keys = {
+        ArrowUp: () => { y += STEP; },   // reveal content below -> image moves down toward 0
+        ArrowDown: () => { y -= STEP; },   // reveal content above
+        ArrowLeft: () => { x += STEP; },
+        ArrowRight: () => { x -= STEP; },
+      };
+
+      window.addEventListener('keydown', function (e) {
+        const fn = keys[e.key];
+        if (!fn) return;
+        e.preventDefault();
+        fn();
+        apply();
+      });
+
+      // Scale the 1024x768 stage to fill the viewport, preserving aspect ratio.
+      function fit() {
+        const s = Math.min(window.innerWidth / 1024, window.innerHeight / 768);
+        stage.style.transform = 'scale(' + s + ')';
+      }
+      window.addEventListener('resize', fit);
+
+      function init() {
+        computeBounds();
+        // Start with the AOI centered inside the placeholder.
+        const iw = aoi.naturalWidth * SCALE;
+        const ih = aoi.naturalHeight * SCALE;
+        x = (placeholder.clientWidth - iw) / 2;
+        y = (placeholder.clientHeight - ih) / 2;
+        apply();
+        fit();
+      }
+
+      if (aoi.complete && aoi.naturalWidth) {
+        init();
+      } else {
+        aoi.addEventListener('load', init);
+      }
+      stage.focus();
+    })();
+  </script>
+</body>
+
+</html>
