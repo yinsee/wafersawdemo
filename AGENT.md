@@ -18,7 +18,7 @@ This project is an interactive HTML prototype simulating the UI of a machine vis
    - **Height**: 480px
 3. **Layering**:
    - Bottom: `main-ui.png`
-   - Middle (`#aoi`): The camera feed (`aoi.png`) is enlarged by **1.25x** inside the placeholder. 
+   - Middle (`#aoi`): The camera feed (`aoi.png`) is enlarged by **1.25x** inside the placeholder.
    - Top (`#ui-layer`): The static UI elements (`ui.png`) are pinned precisely over the placeholder, ensuring they remain stationary.
 
 ## Interactions

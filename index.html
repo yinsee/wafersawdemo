@@ -65,6 +65,9 @@
       pointer-events: none;
     }
 
+    :root {
+      --hair-offset: 46px;
+    }
     .center-lines {
       position: absolute;
       left: 0;
@@ -74,6 +77,7 @@
       pointer-events: none;
       z-index: 5;
     }
+
     .line-solid {
       position: absolute;
       left: 0;
@@ -83,31 +87,35 @@
       background-color: #00ff00;
       transform: translateY(-50%);
     }
+
     .line-dashed-top {
       position: absolute;
       left: 0;
-      top: calc(50% - 46px);
+      top: calc(50% - var(--hair-offset));
       width: 100%;
       height: 1px;
       background-image: repeating-linear-gradient(90deg, #00ff00, #00ff00 24px, transparent 24px, transparent 40px);
     }
+
     .line-dashed-bottom {
       position: absolute;
       left: 0;
-      top: calc(50% + 45px);
+      top: calc(50% + var(--hair-offset));
       width: 100%;
       height: 1px;
       background-image: repeating-linear-gradient(90deg, #00ff00, #00ff00 24px, transparent 24px, transparent 40px);
     }
+
     .crosshair-tick-top {
       position: absolute;
       left: 50%;
-      top: calc(50% - 46px - 7px);
+      top: calc(50% - var(--hair-offset) - 7px);
       width: 1px;
       height: 15px;
       background-color: #00ff00;
       transform: translateX(-50%);
     }
+
     .crosshair-tick-center {
       position: absolute;
       left: 50%;
@@ -117,10 +125,11 @@
       background-color: #00ff00;
       transform: translateX(-50%);
     }
+
     .crosshair-tick-bottom {
       position: absolute;
       left: 50%;
-      top: calc(50% + 45px - 7px);
+      top: calc(50% + var(--hair-offset) - 7px);
       width: 1px;
       height: 15px;
       background-color: #00ff00;
@@ -135,6 +144,40 @@
       height: 100%;
       pointer-events: none;
       z-index: 10;
+    }
+
+    .ui-btn {
+      position: absolute;
+      width: 188px;
+      height: 76px;
+      cursor: pointer;
+      background-image: url('main-ui.png');
+      background-repeat: no-repeat;
+      border: none;
+      outline: none;
+      border-radius: 2px;
+      box-shadow: inset 1px 1px 2px rgba(255,255,255,0.7), inset -1px -1px 2px rgba(0,0,0,0.5);
+      z-index: 20; /* above everything */
+    }
+    .ui-btn:active, .ui-btn.active {
+      box-shadow: inset 2px 2px 4px rgba(0,0,0,0.6), inset -1px -1px 2px rgba(255,255,255,0.4);
+      background-position-y: calc(var(--bg-y) + 1px) !important;
+      background-position-x: calc(var(--bg-x) + 1px) !important;
+    }
+
+    #btn-f3 {
+      left: 418px;
+      top: 603px;
+      background-position: -418px -603px;
+      --bg-x: -418px;
+      --bg-y: -603px;
+    }
+    #btn-f8 {
+      left: 418px;
+      top: 680px;
+      background-position: -418px -680px;
+      --bg-x: -418px;
+      --bg-y: -680px;
     }
 
     /* #hint {
@@ -155,20 +198,23 @@
       <img class="bg" src="main-ui.png" alt="main ui">
       <div id="placeholder">
         <img id="aoi" src="aoi.png" alt="aoi">
-        
+
         <div class="center-lines">
           <div class="line-dashed-top"></div>
           <div class="crosshair-tick-top"></div>
-          
+
           <div class="line-solid"></div>
           <div class="crosshair-tick-center"></div>
-          
+
           <div class="line-dashed-bottom"></div>
           <div class="crosshair-tick-bottom"></div>
         </div>
 
         <img id="ui-layer" src="ui.png" alt="ui overlay">
       </div>
+      
+      <button id="btn-f3" class="ui-btn" title="Narrow Hair (F3)"></button>
+      <button id="btn-f8" class="ui-btn" title="Widen Hair (F8)"></button>
       <!-- <div id="hint">Use arrow keys to pan AOI</div> -->
     </div>
   </div>
@@ -214,7 +260,51 @@
         ArrowRight: () => { x -= STEP; },
       };
 
+      // Hair offset logic
+      let hairOffset = 46;
+      const rootStyle = document.documentElement.style;
+      const btnF3 = document.getElementById('btn-f3');
+      const btnF8 = document.getElementById('btn-f8');
+
+      function updateHairOffset() {
+        rootStyle.setProperty('--hair-offset', hairOffset + 'px');
+      }
+
+      function narrowHair() {
+        if (hairOffset > 0) {
+          hairOffset = Math.max(0, hairOffset - 2);
+          updateHairOffset();
+        }
+      }
+
+      function widenHair() {
+        if (hairOffset < 240) {
+          hairOffset += 2;
+          updateHairOffset();
+        }
+      }
+
+      function simulateButtonPress(btn) {
+        btn.classList.add('active');
+        setTimeout(() => btn.classList.remove('active'), 150);
+      }
+
+      btnF3.addEventListener('click', narrowHair);
+      btnF8.addEventListener('click', widenHair);
+
       window.addEventListener('keydown', function (e) {
+        if (e.key === 'F3') {
+          e.preventDefault();
+          narrowHair();
+          simulateButtonPress(btnF3);
+          return;
+        }
+        if (e.key === 'F8') {
+          e.preventDefault();
+          widenHair();
+          simulateButtonPress(btnF8);
+          return;
+        }
         const fn = keys[e.key];
         if (!fn) return;
         e.preventDefault();
