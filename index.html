@@ -460,13 +460,25 @@
         apply();
       });
 
-      const btnStart = document.getElementById('btn-start');
-      btnStart.addEventListener('click', () => {
-        // Reset to random position inside bounds [minX, 0] and [minY, 0]
-        x = minX + Math.random() * (0 - minX);
-        y = minY + Math.random() * (0 - minY);
+      // Randomize the AOI position (small offset from centre) and the
+      // dashline gap. Shared by the Start button and the initial load.
+      const MAX_OFFSET = 10; // px, per direction
+      function randomize() {
+        const iw = aoi.naturalWidth * SCALE;
+        const ih = aoi.naturalHeight * SCALE;
+        const cx = (placeholder.clientWidth - iw) / 2;
+        const cy = (placeholder.clientHeight - ih) / 2;
+        x = cx + (Math.random() * 2 - 1) * MAX_OFFSET;
+        y = cy + (Math.random() * 2 - 1) * MAX_OFFSET;
         apply();
-      });
+
+        // Randomize the gap between the two dashed lines.
+        hairOffset = 20 + Math.round(Math.random() * 60); // 20..80 px
+        updateHairOffset();
+      }
+
+      const btnStart = document.getElementById('btn-start');
+      btnStart.addEventListener('click', randomize);
 
       window.addEventListener('keydown', function (e) {
         if (e.key === 'F3') {
@@ -497,12 +509,8 @@
 
       function init() {
         computeBounds();
-        // Start with the AOI centered inside the placeholder.
-        const iw = aoi.naturalWidth * SCALE;
-        const ih = aoi.naturalHeight * SCALE;
-        x = (placeholder.clientWidth - iw) / 2;
-        y = (placeholder.clientHeight - ih) / 2;
-        apply();
+        // Start at a random position/gap, same as clicking Start.
+        randomize();
         fit();
       }
 
