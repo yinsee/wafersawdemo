@@ -460,20 +460,28 @@
         apply();
       });
 
-      // Randomize the AOI position (small offset from centre) and the
+      // Randomize the AOI position (offset from centre) and the
       // dashline gap. Shared by the Start button and the initial load.
-      const MAX_OFFSET = 10; // px, per direction
+      const MIN_OFFSET = 7;  // at least >6 pixels away from the center
+      const MAX_OFFSET = 15; // max offset from the center
       function randomize() {
         const iw = aoi.naturalWidth * SCALE;
         const ih = aoi.naturalHeight * SCALE;
         const cx = (placeholder.clientWidth - iw) / 2;
         const cy = (placeholder.clientHeight - ih) / 2;
-        x = cx + (Math.random() * 2 - 1) * MAX_OFFSET;
-        y = cy + (Math.random() * 2 - 1) * MAX_OFFSET;
+
+        const getRandomShift = (min, max) => {
+          const val = min + Math.random() * (max - min);
+          return Math.random() < 0.5 ? -val : val;
+        };
+
+        x = cx + getRandomShift(MIN_OFFSET, MAX_OFFSET);
+        y = cy + getRandomShift(MIN_OFFSET, MAX_OFFSET);
         apply();
 
         // Randomize the gap between the two dashed lines.
-        hairOffset = 20 + Math.round(Math.random() * 60); // 20..80 px
+        // Reduced maximum width from 80px to 50px.
+        hairOffset = 20 + Math.round(Math.random() * 30); // 20..50 px
         updateHairOffset();
       }
 
